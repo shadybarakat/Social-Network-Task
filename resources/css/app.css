@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.like-btn {
+    color: #6b7280; /* gray */
+}
+
+.like-btn.liked, .like-btn:hover {
+    color: #1877f2; /* Facebook blue */
+    font-weight: 600;
+}

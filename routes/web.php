@@ -1,0 +1,40 @@
+<?php
+
+use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\Posts\EditController;
+use App\Http\Controllers\Posts\IndexController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Public profile
+    Route::get('/users/{user}', [ProfileController::class, 'show'])
+        ->name('users.profile');    
+    
+    //homepage
+    Route::get('/homepage', action: HomepageController::class)->name('homepage');
+
+    //posts
+    Route::prefix('posts')->as('posts.')->group(base_path(
+        'routes/web/posts.php'
+    ));
+
+    //connections
+    Route::prefix('connections')->as('connections.')->group(base_path(
+        'routes/web/connections.php'
+    ));
+});
+
+require __DIR__ . '/auth.php';
