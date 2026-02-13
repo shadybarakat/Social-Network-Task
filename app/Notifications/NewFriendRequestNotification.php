@@ -2,53 +2,54 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class NewFriendRequestNotification extends Notification
+class NewFriendRequestNotification extends Notification implements ShouldBroadcastNow
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
+    protected $sender;
+    public $reciver;
+    public function __construct(User $sender)
     {
-        //
+        $this->sender = $sender;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
+    public function via($notifiable)
     {
-        return ['mail'];
+        $this->reciver = $notifiable;
+        return ['database', 'broadcast'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
+    public function toArray($notifiable)
     {
         return [
-            //
+            'id' => $this->sender->id,
+            'name' => $this->sender->name,
+            'message' => 'New Friend Request From: ' . $this->sender->name,
         ];
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'user_id' => $this->sender->id,
+            'name' => $this->sender->name,
+            'message' => 'New Friend Request From: ' . $this->sender->name,
+        ]);
+    }
+
+    public function broadcastOn()
+    {
+        return ['public-user.' . $this->reciver->id];
+    }
+
+    public function broadcastAs()
+    {
+        return 'new.friend.request';
     }
 }

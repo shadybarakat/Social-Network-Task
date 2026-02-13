@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Connections;
 
+use App\Events\NewFriendRequestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Connection;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Notifications\NewFriendRequestNotification;
+use Illuminate\Support\Facades\Notification;
 
 class SendController extends Controller
 {
@@ -31,6 +33,9 @@ class SendController extends Controller
             'sender_id' => $authUser->id,
             'receiver_id' => $user->id,
         ]);
+
+        //notification
+        $user->notify(new NewFriendRequestNotification($authUser));
 
         return response()->json(['success' => 'Request sent!']);
     }

@@ -23,52 +23,91 @@
                     </x-nav-link>
                 </div>
             </div>
+            <div class="flex flex-row">
+                <!-- Notifications Dropdown -->
+                <div class="hidden sm:flex sm:items-center">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button
+                                class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button
-                            class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-
-                            <img src="{{ Auth::user()->avatar }}" class="w-8 h-8 rounded-full object-cover"
-                                alt="Avatar" />
-
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                        <x-slot name="content">
+                            <div id="notifications-dropdown">
+                                @if (count(auth()->user()->notifications))
+                                    @foreach (auth()->user()->notifications as $notification)
+                                        <x-dropdown-link
+                                            class="list-group-item @if ($notification->read() == null) bg-light @else bg-transparent @endif"
+                                            href="{{ route('users.profile', $notification->data['id']) }}">
+                                            <p><strong>{{ $notification->data['message'] }}</strong></p>
+                                            <small
+                                                class="badge badge-pill badge-light text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                        </x-dropdown-link>
+                                    @endforeach
+                                @else
+                                    <x-dropdown-link>
+                                        <p>No Notifications Yet</p>
+                                    </x-dropdown-link>
+                                @endif
                             </div>
-                        </button>
-                    </x-slot>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+                <!-- Settings Dropdown -->
+                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button
+                                class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('users.profile', auth()->user())">
-                            {{ __('view Profile') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Edit Profile') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('connections.friends')">
-                            {{ __('My Friends') }}
-                        </x-dropdown-link>
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                                <img src="{{ Auth::user()->avatar }}" class="w-8 h-8 rounded-full object-cover"
+                                    alt="Avatar" />
 
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                <div>{{ Auth::user()->name }}</div>
+
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('users.profile', auth()->user())">
+                                {{ __('view Profile') }}
                             </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Edit Profile') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('connections.friends')">
+                                {{ __('My Friends') }}
+                            </x-dropdown-link>
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
             </div>
 
             <!-- Hamburger -->

@@ -1,5 +1,4 @@
 import axios from "axios";
-
 document.addEventListener("click", function (e) {
     // LIKE
     if (e.target.closest(".like-btn")) {

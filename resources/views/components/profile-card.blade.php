@@ -12,11 +12,6 @@
                     @endif
                 </div>
             </div>
-            @if (auth()->check() && auth()->id() === $user->id)
-                <x-primary-button href="{{ route('profile.edit') }}">
-                    Edit Profile
-                </x-primary-button>
-            @endif
             {{ $slot }}
         </div>
     </div>

@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\Posts\EditController;
-use App\Http\Controllers\Posts\IndexController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,8 +15,8 @@ Route::middleware('auth')->group(function () {
 
     // Public profile
     Route::get('/users/{user}', [ProfileController::class, 'show'])
-        ->name('users.profile');    
-    
+        ->name('users.profile');
+
     //homepage
     Route::get('/', action: HomepageController::class)->name('homepage');
 
