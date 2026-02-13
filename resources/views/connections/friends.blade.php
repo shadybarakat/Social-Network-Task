@@ -5,25 +5,16 @@
         </h2>
     </x-slot>
 
-    @foreach($friends as $friend)
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg ">
-                <div class="max-w-xl flex flex-row justify-center align-middle items-center gap-5">
-            <img
-                src="{{ $friend->avatar }}"
-                class="w-24 h-24 rounded-full object-cover"
-                alt="Avatar"
-            />
-            <div>
-                <h2 class="text-2xl font-semibold">{{ $friend->name }}</h2>
 
-                @if ($friend->bio)
-                    <p class="text-gray-600 mt-2">{{ $friend->bio }}</p>
-                @endif
+    @if ($friends->isEmpty())
+        <p class="text-center py-6 text-gray-500">No Posts Yet</p>
+    @else
+        @foreach ($friends as $friend)
+            <div class="py-6">
+                <x-profile-card :user="$friend">
+                    <span class="text-green-500">Friend</span>
+                </x-profile-card>
             </div>
-        </div>
-    </div>
-    </div>
-    @endforeach
+        @endforeach
+    @endif
 </x-app-layout>

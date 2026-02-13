@@ -10,7 +10,16 @@ class IndexController extends Controller
 {
     public function __invoke()
     {
-        $posts = Auth::guard('web')->user()->posts;
-        return view('posts.index',['posts' => $posts]);
+        $posts = auth()->user()
+            ->posts()
+            ->with([
+                'user',
+                'comments.user',
+                'likes.user',
+            ])
+            ->latest()
+            ->paginate(10);
+
+        return view('posts.index', compact('posts'));
     }
 }

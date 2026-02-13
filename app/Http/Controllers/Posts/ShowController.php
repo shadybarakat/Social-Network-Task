@@ -10,6 +10,12 @@ class ShowController extends Controller
 {
     public function __invoke(Post $post)
     {
-        return view('posts.show', ['post' => $post]);
+        $post = $post->with([
+            'user',
+            'comments.user',
+            'likes.user',
+        ]);
+        
+        return view('posts.show', compact('post'));
     }
 }

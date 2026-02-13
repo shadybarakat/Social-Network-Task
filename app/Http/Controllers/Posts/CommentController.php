@@ -8,18 +8,26 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function __invoke(Request $request, Post $post)
-    {
-        $request->validate(['content' => 'required|min:1']);
+public function __invoke(Request $request, Post $post)
+{
+    $data = $request->validate([
+        'content' => 'required|string|max:1000',
+    ]);
 
-        $comment = $post->comments()->create([
-            'user_id' => auth()->id(),
-            'content' => $request->content
-        ]);
+    $comment = $post->comments()->create([
+        'user_id' => auth()->id(),
+        'content' => $data['content'],
+    ]);
 
-        return response()->json([
-            'content' => $comment->content,
-            'user_name' => $comment->user->name
-        ]);
-    }
+    return response()->json([
+        'id' => $comment->id,
+        'content' => $comment->content,
+        'user' => [
+            'id' => $comment->user->id,
+            'name' => $comment->user->name,
+            'profile_url' => route('users.profile', $comment->user),
+        ],
+    ]);
+}
+
 }

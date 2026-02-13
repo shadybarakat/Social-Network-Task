@@ -10,7 +10,9 @@ class FriendsController extends Controller
     public function __invoke()
     {
         $user = auth()->user();
-        $friends = $user->friends();
+
+        $friends = $user->friendsUsers();
+
         return view('connections.friends', compact('friends'));
     }
 }

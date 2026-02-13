@@ -6,11 +6,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $appends = ['avatar'];
+    
     protected $fillable = [
         'name',
         'email',
@@ -24,6 +27,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->profile_picture
+                ? asset('storage/' . $this->profile_picture)
+                : asset('images/default-avatar.png')
+        );
+    }
     /* ========= Relations ========= */
 
     public function posts()
@@ -53,34 +64,43 @@ class User extends Authenticatable
         return $this->hasMany(Connection::class, 'receiver_id');
     }
 
-    public function getAvatarAttribute(): string
-    {
-        if ($this->profile_picture) {
-            return asset('storage/' . $this->profile_picture);
-        }
-
-        return asset('images/default-avatar.png');
-    }
-
     public function connections()
     {
         return $this->hasMany(Connection::class, 'sender_id')
             ->orWhere('receiver_id', $this->id);
     }
 
+    public function friendRequests()
+    {
+        return $this->hasMany(Connection::class, 'receiver_id')
+            ->Where('status', 'pending');
+    }
+
+    public function connectionWith(User $user)
+    {
+        return $this->connections->first(
+            fn($connection) =>
+            $connection->sender_id === $user->id || $connection->receiver_id === $user->id
+        );
+    }
+
+
     public function friends()
     {
-        $connections = Connection::where(function ($q) {
-            $q->where('sender_id', $this->id)
-                ->orWhere('receiver_id', $this->id);
-        })->where('status', 'accepted')->get();
+        return $this->hasMany(Connection::class, 'sender_id')
+            ->where('status', 'accepted')
+            ->orWhere(function ($q) {
+                $q->where('receiver_id', $this->id)
+                    ->where('status', 'accepted');
+            });
+    }
 
-        $friends = $connections->map(function ($connection) {
+    public function friendsUsers()
+    {
+        return $this->friends()->with(['sender', 'receiver'])->get()->map(function ($connection) {
             return $connection->sender_id == $this->id
                 ? $connection->receiver
                 : $connection->sender;
         });
-
-        return $friends;
     }
 }

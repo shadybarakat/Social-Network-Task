@@ -1,29 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('My Posts') }}
-        </h2>
+        <div class="flex justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('My Posts') }}
+            </h2>
+            <x-primary-button href="{{ route('posts.create') }}">Add Post</x-primary-button>
+        </div>
     </x-slot>
-                    @if ($posts)
-                        @foreach ($posts as $post)
-                        <div class="py-6">
-                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> 
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div class="p-6 text-gray-900">
-                                    <p>{{ $post->content }}</p>
-                       <div class="sm:flex sm:items-center gap-5 my-5 pt-6">
-            <a class="mx-5 text-sm/6 font-semibold" href="/posts/{{ $post->id }}/edit">Edit post</a>
-            <form method="POST" action="/posts/{{ $post->id }}">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="mx-5 text-sm/6 font-semibold text-red-700">Delete</button>
-            </form>
-    </div>
-                            </div>
-                        </div>
-                        </div>
-                            </div>
-                        @endforeach
-                    @endif
-
+    @if ($posts)
+        @if ($posts->isEmpty())
+            <p class="text-center py-6 text-gray-500">No Posts Yet</p>
+        @else
+            @foreach ($posts as $post)
+                <div class="py-3">
+                    <x-post-card :post="$post"></x-post-card>
+                </div>
+            @endforeach
+            <!-- Pagination -->
+            <div class="my-4 flex justify-center align-middle pb-10">
+                {{ $posts->links() }}
+            </div>
+        @endif
+    @endif
 </x-app-layout>

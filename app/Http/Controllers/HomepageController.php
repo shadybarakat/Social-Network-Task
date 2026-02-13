@@ -11,8 +11,8 @@ class HomepageController extends Controller
     {
         $posts = Post::with([
             'user',
-            'likes',
             'comments.user',
+            'likes.user',
         ])
             ->latest()
             ->paginate(10);
