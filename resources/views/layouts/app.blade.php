@@ -27,12 +27,21 @@
 
         channel.bind('new.friend.request', function(data) {
             console.log('New Notification:', data);
-            let dropdown = document.querySelector('#notifications-dropdown');
+                        let dropdown = document.querySelector('#notifications-dropdown');
             let html = `
-            <a href="/users/${data.user_id}" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+            <a href="${data.user_id}" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
               ${data.message}
             </a>
             `;
+            dropdown.insertAdjacentHTML('afterbegin', html);
+        });
+
+        channel.bind('post.liked', function(data) {
+            let dropdown = document.querySelector('#notifications-dropdown');
+            let html = `
+                        <a href="${data.url}" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            ${data.message}
+                        </a>`;
             dropdown.insertAdjacentHTML('afterbegin', html);
         });
     </script>

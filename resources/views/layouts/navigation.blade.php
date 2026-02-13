@@ -46,8 +46,7 @@
                                 @if (count(auth()->user()->notifications))
                                     @foreach (auth()->user()->notifications as $notification)
                                         <x-dropdown-link
-                                            class="list-group-item @if ($notification->read() == null) bg-light @else bg-transparent @endif"
-                                            href="{{ route('users.profile', $notification->data['id']) }}">
+                                            href=" {{ $notification->data['url'] }}">
                                             <p><strong>{{ $notification->data['message'] }}</strong></p>
                                             <small
                                                 class="badge badge-pill badge-light text-muted">{{ $notification->created_at->diffForHumans() }}</small>
