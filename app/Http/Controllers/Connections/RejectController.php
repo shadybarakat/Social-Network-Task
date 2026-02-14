@@ -11,6 +11,6 @@ class RejectController extends Controller
     public function __invoke(Connection $connection)
     {
         $connection->update(['status' => 'rejected']);
-        return back()->with('success', 'Friend request rejected!');
+        return response()->json(['success' => 'Request rejected!']);
     }
 }

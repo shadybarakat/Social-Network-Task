@@ -9,13 +9,18 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    <form method="post" action="{{ route('posts.store') }}" class="mt-6 space-y-6">
+                    <form method="post" action="{{ route('posts.store') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
                         @csrf
                         <div>
                             <x-input-label for="content" :value="__(key: 'Content')" />
                             <x-text-input id="content" name="content" type="text" class="mt-1 block w-full"
                                 :value="old('content')" required />
                             <x-input-error class="mt-2" :messages="$errors->get('content')" />
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label for="image" value="Post Image" />
+                            <x-text-input id="image" name="image" type="file" class="mt-1 block w-full" />
                         </div>
 
                         <div class="flex items-center gap-4">

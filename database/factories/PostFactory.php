@@ -13,7 +13,7 @@ class PostFactory extends Factory
     {
         return [
             'content' => fake()->paragraph(),
-            'image' => null,
+            'image' => asset('images/default-post.png'),
         ];
     }
 }

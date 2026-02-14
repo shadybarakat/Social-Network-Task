@@ -66,6 +66,7 @@ document.addEventListener("click", function (e) {
     }
 });
 
+// COMMENT
 document.addEventListener("submit", function (e) {
     if (!e.target.classList.contains("comment-form")) return;
 

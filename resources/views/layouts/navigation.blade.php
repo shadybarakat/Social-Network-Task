@@ -3,13 +3,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
-
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('homepage')" :active="request()->routeIs('homepage')">
@@ -31,11 +24,16 @@
                             <button
                                 class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                 <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd" />
+                                    <svg class="w-[25px] h-[25px] ms-1" fill="#000000" width="256px" height="256px"
+                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M10,20h4a2,2,0,0,1-4,0Zm8-4V10a6,6,0,0,0-5-5.91V3a1,1,0,0,0-2,0V4.09A6,6,0,0,0,6,10v6L4,18H20Z">
+                                            </path>
+                                        </g>
                                     </svg>
                                 </div>
                             </button>
@@ -59,6 +57,20 @@
                             </div>
                         </x-slot>
                     </x-dropdown>
+                </div>
+                <!-- Search -->
+                <div class="sm:items-center sm:ms-6">
+                    <form method="get" action="{{ route('users.search') }}">
+                        @csrf
+                        <div class="flex flex-row gap-3 items-center">
+                            <x-text-input id="q" name="q" type="text" placeholder="Search Users"
+                                class="mt-1 block w-full" :value="old('q')" required />
+                            <x-input-error :messages="$errors->get('q')" />
+                            <div class="hidden">
+                                <x-primary-button>{{ __('Search') }}</x-primary-button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <!-- Settings Dropdown -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -106,20 +118,6 @@
                         </x-slot>
                     </x-dropdown>
                 </div>
-                <!-- Search Dropdown -->
-                <div class="sm:items-center sm:ms-6">
-                    <form method="get" action="{{ route('users.search') }}">
-                        @csrf
-                        <div class="flex flex-row gap-3 items-center">
-                            <x-text-input id="q" name="q" type="text" placeholder="Search Users"
-                                class="mt-1 block w-full" :value="old('q')" required />
-                            <x-input-error :messages="$errors->get('q')" />
-                            <div class="hidden">
-                                <x-primary-button>{{ __('Search') }}</x-primary-button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
 
             <!-- Hamburger -->
@@ -141,8 +139,14 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('homepage')" :active="request()->routeIs('homepage')">
+                {{ __('Homepage') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('posts.myPosts')" :active="request()->routeIs('posts.myPosts')">
+                {{ __('My Posts') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('connections.requests')" :active="request()->routeIs('connections.requests')">
+                {{ __('Friend Requests') }}
             </x-responsive-nav-link>
         </div>
 
@@ -154,10 +158,15 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                <x-responsive-nav-link :href="route('users.profile', auth()->user())">
+                    {{ __('view Profile') }}
                 </x-responsive-nav-link>
-
+                <x-responsive-nav-link :href="route('profile.edit')">
+                    {{ __('Edit Profile') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('connections.friends')">
+                    {{ __('My Friends') }}
+                </x-responsive-nav-link>
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
