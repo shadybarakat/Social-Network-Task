@@ -23,7 +23,7 @@
                     </x-nav-link>
                 </div>
             </div>
-            <div class="flex flex-row">
+            <div class="flex flex-row items-center">
                 <!-- Notifications Dropdown -->
                 <div class="hidden sm:flex sm:items-center">
                     <x-dropdown align="right" width="48">
@@ -45,8 +45,7 @@
                             <div id="notifications-dropdown">
                                 @if (count(auth()->user()->notifications))
                                     @foreach (auth()->user()->notifications as $notification)
-                                        <x-dropdown-link
-                                            href=" {{ $notification->data['url'] }}">
+                                        <x-dropdown-link href=" {{ $notification->data['url'] }}">
                                             <p><strong>{{ $notification->data['message'] }}</strong></p>
                                             <small
                                                 class="badge badge-pill badge-light text-muted">{{ $notification->created_at->diffForHumans() }}</small>
@@ -106,6 +105,20 @@
                             </form>
                         </x-slot>
                     </x-dropdown>
+                </div>
+                <!-- Search Dropdown -->
+                <div class="sm:items-center sm:ms-6">
+                    <form method="get" action="{{ route('users.search') }}">
+                        @csrf
+                        <div class="flex flex-row gap-3 items-center">
+                            <x-text-input id="q" name="q" type="text" placeholder="Search Users"
+                                class="mt-1 block w-full" :value="old('q')" required />
+                            <x-input-error :messages="$errors->get('q')" />
+                            <div class="hidden">
+                                <x-primary-button>{{ __('Search') }}</x-primary-button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 

@@ -24,6 +24,9 @@ return new class extends Migration
 
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('name');
+            $table->index('email');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
