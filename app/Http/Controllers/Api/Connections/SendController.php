@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Connections;
+namespace App\Http\Controllers\Api\Connections;
 
+use App\Factories\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\ConnectionResource;
 use App\Models\Connection;
 use App\Models\User;
 use App\Notifications\NewFriendRequestNotification;
@@ -13,10 +15,6 @@ class SendController extends Controller
     {
         $authUser = auth()->user();
 
-        if ($authUser->id == $user->id) {
-            return response()->json(['error' => 'Cannot add yourself'], 400);
-        }
-
         $exists = Connection::where(function ($q) use ($authUser, $user) {
             $q->where('sender_id', $authUser->id)->where('receiver_id', $user->id);
         })->orWhere(function ($q) use ($authUser, $user) {
@@ -24,10 +22,10 @@ class SendController extends Controller
         })->exists();
 
         if ($exists) {
-            return response()->json(['error' => 'Request exists'], 400);
+            throw new \Exception('Request already exist');
         }
 
-        Connection::create([
+        $connection = Connection::create([
             'sender_id' => $authUser->id,
             'receiver_id' => $user->id,
         ]);
@@ -35,6 +33,9 @@ class SendController extends Controller
         //notification
         $user->notify(new NewFriendRequestNotification($authUser));
 
-        return response()->json(['success' => 'Request sent!']);
+        return ApiResponse::created(
+            new ConnectionResource($connection),
+            'Friend request sent'
+        );
     }
 }
