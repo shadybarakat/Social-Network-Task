@@ -14,7 +14,7 @@
             </div>
             <p class="text-gray-900 mb-2">{{ $post->content }}</p>
             @if ($post->banner)
-                <img src="{{ $post->banner }}" class="mt-10 mb-10 w-full h-64 object-cover rounded-lg"
+                <img src="{{ $post->banner }}" class="mt-10 mb-10 w-[500px] object-cover rounded-lg"
                     alt="Post Image" />
             @endif
             <!-- Likes -->

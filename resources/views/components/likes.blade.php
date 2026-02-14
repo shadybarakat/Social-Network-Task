@@ -3,7 +3,7 @@
 <div class="relative inline-block group text-sm text-gray-600">
 
     <!-- Like button -->
-    <button class="like-btn flex items-center gap-1 font-semibold text-blue-500"
+    <button class="like-btn flex items-center gap-1 font-semibold text-blue-500 text-lg"
         data-url="{{ route('posts.like', $post->id) }}">
         Like
         <span class="like-count">{{ $post->likes->count() }}</span>
